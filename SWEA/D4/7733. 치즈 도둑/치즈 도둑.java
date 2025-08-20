@@ -28,9 +28,7 @@ public class Solution {
 				StringTokenizer st = new StringTokenizer(br.readLine());
 				for(int j=0; j<n; j++) {
 					matrix[i][j] = Integer.parseInt(st.nextToken());
-					if(maxnum<matrix[i][j]) maxnum = matrix[i][j];
-					if(minnum>matrix[i][j]) minnum = matrix[i][j];
-					
+					if(maxnum<matrix[i][j]) maxnum = matrix[i][j];					
 				}
 			}
 			
