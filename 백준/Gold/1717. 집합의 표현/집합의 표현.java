@@ -18,7 +18,6 @@ public class Main {
 			int a = Integer.parseInt(st1.nextToken());
 			int b = Integer.parseInt(st1.nextToken());
 			int chk = 0;
-			// union
 			if(num == 0) {
 				chk = uni(a, b);
 			}else if(fin(a) == fin(b)) {
@@ -40,3 +39,4 @@ public class Main {
 		return arr[c] = fin(arr[c]);
 	}
 }
+
