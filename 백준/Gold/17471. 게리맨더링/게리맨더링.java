@@ -9,24 +9,20 @@ import java.util.StringTokenizer;
 
 
 public class Main {
-	static int[] map, arr, vis;
-	static int result = Integer.MAX_VALUE, n;
+	static int n, result = Integer.MAX_VALUE;
 	static List<Integer>[] li;
+	static int[] map, arr, vis;
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		n = Integer.parseInt(br.readLine());		
-		arr = new int[n+1];
-		vis = new int[n+1];
-		li = new ArrayList[n+1];
+		n = Integer.parseInt(br.readLine());	
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		// 인구수
+		arr = new int[n+1];
 		for(int i=1; i<=n; i++) {
 			arr[i] = Integer.parseInt(st.nextToken());
-			li[i] = new ArrayList<>();
 		}
-		map = new int[n+1];
-		for(int i=0; i<n; i++) map[i+1] = i+1;
-		// 지역 연결
+		vis = new int[n+1];
+		li = new ArrayList[n+1];
+		for(int i=1; i<=n; i++) li[i] = new ArrayList<>();
 		for(int i=1; i<=n; i++) {
 			st = new StringTokenizer(br.readLine());
 			int num = Integer.parseInt(st.nextToken());
@@ -34,86 +30,59 @@ public class Main {
 				int tmp = Integer.parseInt(st.nextToken());
 				li[i].add(tmp);
 			}
-		}		
-		// 지역 부분집합
-		dfs(1);
-		if(result == Integer.MAX_VALUE) {
-			System.out.println(-1);
-		} else {
-			System.out.println(result);
 		}
-			
+		dfs(1);
+		if(result == Integer.MAX_VALUE) System.out.println(-1);
+		else System.out.println(result);
 	}
-	public static void dfs(int index) {
-		if(index == n + 1) { 
+	
+	public static void dfs(int cnt) {
+		if(cnt == n+1) {
 			List<Integer> groupA = new ArrayList<>();
-            List<Integer> groupB = new ArrayList<>();
-			
+			List<Integer> groupB = new ArrayList<>();
 			for(int i=1; i<=n; i++) {
-				if(vis[i] == 1) { 
+				if(vis[i] == 1) {
 					groupA.add(i);
-				} else {
+				}else {
 					groupB.add(i);
 				}
 			}
-			
-			if(groupA.isEmpty() || groupB.isEmpty()) {
-				return;
-			}
-			
-			if(iscorrect(groupA) && iscorrect(groupB)){
-				int count1 = 0;
-				for(int node : groupA) count1 += arr[node];
-
-				int count2 = 0;
-				for(int node : groupB) count2 += arr[node];
-
-				result = Math.min(result, Math.abs(count1-count2));
+			if(groupA.isEmpty()||groupB.isEmpty()) return;
+			if(iscorrect(groupA) && iscorrect(groupB)) {
+				int count1 = 0, count2 = 0;
+				for(int a : groupA) {
+					count1 += arr[a];
+				}
+				for(int a : groupB) {
+					count2 += arr[a];
+				}
+				result = Math.min(result, Math.abs(count1 - count2));
 			}
 			return;
 		}
-		vis[index] = 1;
-		dfs(index+1);
-		vis[index] = 0;
-		dfs(index+1);
-		
+		vis[cnt] = 1;
+		dfs(cnt+1);
+		vis[cnt] = 0;
+		dfs(cnt+1);
 	}
 	public static boolean iscorrect(List<Integer> group) {
-		if (group.size() <= 1) {
-            return true;
-        }
-
-        Queue<Integer> q = new LinkedList<>();
-        boolean[] visitedInGroup = new boolean[n + 1];
-        
-        int startNode = group.get(0);
-        q.add(startNode);
-        visitedInGroup[startNode] = true;
-        int count = 1;
-
-        while (!q.isEmpty()) {
-            int current = q.poll();
-            for (int neighbor : li[current]) {
-                if (group.contains(neighbor) && !visitedInGroup[neighbor]) {
-                    visitedInGroup[neighbor] = true;
-                    q.add(neighbor);
-                    count++;
-                }
-            }
-        }
-        return count == group.size();
+		if(group.size()<=1) return true;
+		int count = 1;
+		int[] grovis = new int[n+1];
+		Queue<Integer> q = new LinkedList<>();
+		int cur = group.get(0);
+		q.add(cur);
+		grovis[cur] = 1;
+		while(!q.isEmpty()) {
+			int current = q.poll();
+			for(int c : li[current]) {
+				if(group.contains(c) && grovis[c] == 0) {
+					grovis[c] = 1;
+					q.add(c);
+					count++;
+				}
+			}
+		}
+		return count == group.size();		
 	}
-	/*
-	public static int uni(int a, int b) {
-		int fir = fin(a);
-		int sec = fin(b);
-		if(fir == sec) return 0;
-		map[sec] = fir;
-		return 1;
-	}
-	public static int fin(int c) {
-		if(map[c] == c) return c;
-		return map[c] = fin(map[c]);
-	}
-	*/
 }
