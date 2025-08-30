@@ -1,0 +1,86 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Solution {
+    public static class Pair {
+        int x, y;
+
+        public Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(br.readLine());
+        int[] dx = {0,1,0,-1};
+        int[] dy = {1,0,-1,0};
+        for(int test = 1; test<=t; test++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
+            char[][] map = new char[n][m];
+            Queue<Pair> devilq = new LinkedList<>();
+            Queue<Pair> suyeonq = new LinkedList<>();
+            //수연이의 위치는 ‘S’, 여신의 공간은 ‘D’, 돌의 위치는 ‘X’, 악마는 ‘*’
+            for(int i=0; i<n; i++) {
+                String s = br.readLine();
+                for(int j=0; j<m; j++) {
+                    char a = s.charAt(j);
+                    if(a == '*') devilq.offer(new Pair(i,j));
+                    else if(a == 'S') suyeonq.offer(new Pair(i,j));
+
+                    map[i][j] = a;
+                }
+            }
+            // bfs
+            int time = 0;
+            int[][] vis = new int[n][m];
+            vis[suyeonq.peek().x][suyeonq.peek().y] = 1;
+            boolean chk=true;
+            while(!suyeonq.isEmpty()){
+                time++;
+                // 악마 이동
+                int devillen = devilq.size();
+                for(int i=0; i<devillen; i++){
+                    Pair devilcur = devilq.poll();
+                    for(int d = 0; d<4; d++){
+                        int nx = devilcur.x + dx[d];
+                        int ny = devilcur.y + dy[d];
+                        if(nx<0 || nx>=n || ny<0 || ny>=m) continue;
+                        if(map[nx][ny] == 'X'|| map[nx][ny] == '*'||map[nx][ny] == 'D') continue;
+                        map[nx][ny] = '*';
+                        devilq.offer(new Pair(nx,ny));
+                    }
+                }
+
+                // 수연 이동
+                int len = suyeonq.size();
+                for(int i=0; i<len; i++){
+                    Pair cur = suyeonq.poll();
+                    for(int d = 0; d<4; d++){
+                        int nx = cur.x + dx[d];
+                        int ny = cur.y + dy[d];
+                        if(nx<0 || nx>=n || ny<0 || ny>=m) continue;
+                        if(map[nx][ny] == 'X'||vis[nx][ny] == 1||map[nx][ny] == '*') continue;
+                        // 여신 만나면
+                        if(map[nx][ny] == 'D') {
+                            chk = false;
+                            break;
+                        }
+                        vis[nx][ny] = 1;
+                        suyeonq.offer(new Pair(nx,ny));
+                    }
+                    if(!chk) break;
+                }
+                if(!chk) break;
+            }
+            if(!chk) System.out.println("#"+test+" "+time);
+            else System.out.println("#"+test+" "+"GAME OVER");
+        }
+    }
+}
