@@ -2,42 +2,32 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
-// 부분집합
+// dp
 public class Solution {
-	static int[] arr;
-	static int[] kal;
-	static int n, limit, max;
 	public static void main(String[] args) throws IOException {
-		BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int t = Integer.parseInt(br.readLine());
-		for(int test =1; test<=t; test++) {
+		for(int test = 1; test<=t; test++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			n = Integer.parseInt(st.nextToken());
-			limit = Integer.parseInt(st.nextToken());
-			arr = new int[n];
-			kal = new int[n];
-			for(int i=0; i<n; i++) {
-				StringTokenizer st1 = new StringTokenizer(br.readLine());
-				arr[i] = Integer.parseInt(st1.nextToken());
-				kal[i] = Integer.parseInt(st1.nextToken());
-			}			
-			max = 0;			
-			comb(0,0,0);			
-			System.out.println("#"+test+" "+max);
+			int n = Integer.parseInt(st.nextToken());
+			int l = Integer.parseInt(st.nextToken());
+			int[] ing = new int[n+1];
+			int[] k = new int[l+1];
+			for(int i=1; i<=n; i++) {
+				st = new StringTokenizer(br.readLine());
+				ing[i] = Integer.parseInt(st.nextToken());
+				k[i] = Integer.parseInt(st.nextToken());
+			}
+			int[][] d = new int[n+1][l+1];
+			for(int i=1; i<=n; i++) {
+				for(int w = 1; w<=l; w++) {
+					if(w<k[i]) d[i][w] = d[i-1][w];
+					else {
+						d[i][w] = Math.max(d[i-1][w], ing[i]+d[i-1][w - k[i]]);
+					}
+				}
+			}
+			System.out.println("#"+test+" "+d[n][l]);
 		}
-	}
-	public static void comb(int depth, int score, int k) {
-		
-		if(k>limit) return;
-		if(depth == n) {
-			if(max<score) {
-				max = score;				
-			}	
-			return;
-		}
-		// 현재 자료 선택o
-		comb(depth+1, score+arr[depth], k+kal[depth]);
-		// 현재 자료 선택x 
-		comb(depth+1, score, k);
 	}
 }
