@@ -48,7 +48,6 @@ public class Main {
 			int[] directions = new int[5]; // 1~4번 톱니의 회전 방향 저장 (0:안돔, 1:시계, 2:반시계)
 			directions[num] = d;
 			
-			// 2. ✨ 회전 전의 인덱스 값을 기준으로 왼쪽으로 전파
 			for (int k = num; k > 1; k--) {
 				if (k == 2) { // 2번이 1번에게 전파
 					if (chain1[r1] != chain2[l2]) {
@@ -71,7 +70,6 @@ public class Main {
 				}
 			}
 			
-			// 3. ✨ 회전 전의 인덱스 값을 기준으로 오른쪽으로 전파
 			for (int k = num; k < 4; k++) {
 				if (k == 1) { // 1번이 2번에게 전파
 					if (chain1[r1] != chain2[l2]) {
