@@ -15,26 +15,23 @@ class Solution {
     public int solution(int n, int[][] costs) {
         int answer = 0;
         
-        List<List<Node>> graph = new ArrayList<>();
-        for(int i=0; i<=n; i++){
-            graph.add(new ArrayList<>());
-        }
+        // 연결 리스트
+        // 초기화
+        List<List<Node>> li = new ArrayList<>();
+        for(int i=0; i<=n; i++) li.add(new ArrayList<>());
         
-        for(int[] co : costs){
-            int a = co[0];
-            int b = co[1];
-            int c = co[2];
-            graph.get(a).add(new Node(b, c));
-            graph.get(b).add(new Node(a, c));
+        for(int[] c : costs){
+            li.get(c[0]).add(new Node(c[1], c[2]));
+            li.get(c[1]).add(new Node(c[0], c[2]));
         }
         
         PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.offer(new Node(0, 0));
+        pq.offer(new Node(0,0));
         
         boolean[] vis = new boolean[n+1];
+        
         int totalcost = 0;
         int connected = 0;
-        
         while(!pq.isEmpty()){
             Node cur = pq.poll();
             if(vis[cur.index]) continue;
@@ -43,12 +40,14 @@ class Solution {
             totalcost += cur.cost;
             connected++;
             
-            for(Node g : graph.get(cur.index)){
-                if(vis[g.index])continue;
-                pq.offer(new Node(g.index, g.cost));
+            for(Node l : li.get(cur.index)){
+                if(vis[l.index]) continue;
+                pq.offer(new Node(l.index, l.cost));
             }
         }
+        
         if(connected == n) return totalcost;
-        else return -1;
+        
+        return answer;
     }
 }
