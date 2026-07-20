@@ -1,19 +1,23 @@
 import java.util.*;
-
 class Solution {
+    
+    static String[] words;
     static boolean[] vis;
     static int answer;
+    
     public int solution(String begin, String target, String[] words) {
         answer = 0;
-        vis = new boolean[words.length];
-        dfs(begin, target, words, 0);
+        
+
+        this.words = words;
+        vis = new boolean[words.length+1];
+        dfs(begin, target, 0);
         return answer;
     }
-    public void dfs(String begin, String target, String[] words, int cnt){
-        if(begin.equals(target)){
-            answer = cnt;
-            return;
-        }
+    
+    static void dfs(String begin, String target, int cnt){
+        if(begin.equals(target)) answer = cnt;
+        
         for(int i=0; i<words.length; i++){
             if(vis[i]) continue;
             
@@ -22,11 +26,11 @@ class Solution {
                 if(begin.charAt(j) == words[i].charAt(j)) k++;
             }
             
-            if(k == begin.length()-1){
+            if(k == begin.length()-1) {
                 vis[i] = true;
-                dfs(words[i], target, words, cnt+1);
+                dfs(words[i], target, cnt+1);
                 vis[i] = false;
             }
-        }    
+        }
     }
 }
