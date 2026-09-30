@@ -1,53 +1,36 @@
 import java.util.*;
 
 class Solution {
-    static public class Node implements Comparable<Node>{
-        int index;
-        int cost;
-        public Node(int index, int cost){
-            this.index = index;
-            this.cost = cost;
-        }
-        public int compareTo(Node other){
-            return Integer.compare(this.cost, other.cost);
-        }
-    }
+    static int[] parent;
     public int solution(int n, int[][] costs) {
         int answer = 0;
         
-        // 연결 리스트
-        // 초기화
-        List<List<Node>> li = new ArrayList<>();
-        for(int i=0; i<=n; i++) li.add(new ArrayList<>());
+        parent = new int[n+1];
+        for(int i=0; i<=n; i++) parent[i] = i;
+        
+        Arrays.sort(costs, (x,y)-> x[2] - y[2]);
         
         for(int[] c : costs){
-            li.get(c[0]).add(new Node(c[1], c[2]));
-            li.get(c[1]).add(new Node(c[0], c[2]));
-        }
-        
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.offer(new Node(0,0));
-        
-        boolean[] vis = new boolean[n+1];
-        
-        int totalcost = 0;
-        int connected = 0;
-        while(!pq.isEmpty()){
-            Node cur = pq.poll();
-            if(vis[cur.index]) continue;
+            int a = c[0];
+            int b = c[1];
+            int cost = c[2];
             
-            vis[cur.index] = true;
-            totalcost += cur.cost;
-            connected++;
-            
-            for(Node l : li.get(cur.index)){
-                if(vis[l.index]) continue;
-                pq.offer(new Node(l.index, l.cost));
+            if(uni(a, b) == 1){
+                answer += cost;
             }
         }
         
-        if(connected == n) return totalcost;
-        
         return answer;
+    }
+    public int uni(int a, int b){
+        int fir = fin(a);
+        int sec = fin(b);
+        if(fir == sec) return 0;
+        parent[fir] = sec;
+        return 1;
+    }
+    public int fin(int a){
+        if(parent[a] == a) return a;
+        return parent[a] = fin(parent[a]);
     }
 }
