@@ -1,38 +1,40 @@
 import java.util.*;
 
 class Solution {
-    
-    static int answer;
+    static String[] words;
     static boolean[] vis;
-    
+    static int answer;
     public int solution(String begin, String target, String[] words) {
-        answer = 0;
+        answer = 0;       
+        this.words = words;
         vis = new boolean[words.length];
-        dfs(begin, target, words, 0);
+        dfs(begin, target, 0);
+        
         return answer;
     }
     
-    public void dfs(String begin, String target, String[] words, int cnt){
-        // 1. 중단조건
+    static void dfs(String begin, String target, int cnt){
+        // 종료조건
         if(begin.equals(target)){
             answer = cnt;
             return;
         }
+        
         for(int i=0; i<words.length; i++){
             if(vis[i]) continue;
             
-            // 한글자만 다른 단어 찾기
-            int k=0;
+            int num = 0;
             for(int j=0; j<begin.length(); j++){
-                if(begin.charAt(j) == words[i].charAt(j)) k++;
+                if(begin.charAt(j) == words[i].charAt(j)){
+                    num++;
+                }
             }
             
-            // 한글자만 다른 해당 단어
-            if(k == begin.length() - 1){
-                vis[i] = true; // 방문 표시
-                dfs(words[i], target, words, cnt+1);
+            if(num == begin.length()-1){
+                vis[i] = true;
+                dfs(words[i], target, cnt+1);
                 vis[i] = false;
-            }
+            }            
         }
     }
 }
