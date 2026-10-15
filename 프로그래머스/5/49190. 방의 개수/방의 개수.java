@@ -42,7 +42,7 @@ class Solution {
     }
     // 점 하나를 long 키로 변환
     static long encode(int x, int y){
-        return (long)(x + 300000)*1000000 + (y+300000);
+        return (long)(x + 100000)*1000000 + (y+100000);
     }
     // 두 점을 long 키로
     static long encodeEdge(int x1, int y1, int x2, int y2){
