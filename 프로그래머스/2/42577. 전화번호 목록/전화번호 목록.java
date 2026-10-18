@@ -4,14 +4,20 @@ class Solution {
     public boolean solution(String[] phone_book) {
         boolean answer = true;
         
-        Set<String> book = new HashSet<>();
+        // 오름차순으로 정렬
+        Arrays.sort(phone_book);
+        
+        int n = phone_book.length;
+        Set<String> set = new HashSet<>();
+        
         for(String s : phone_book){
-            book.add(s);
+            set.add(s);
         }
-        for(String number : phone_book){
-            for(int i=1; i< number.length(); i++){
-                String prefix = number.substring(0, i);
-                if(book.contains(prefix)){
+        
+        for(String s : phone_book){
+            for(int i=1; i<s.length(); i++){
+                String prefix = s.substring(0,i);
+                if(set.contains(prefix)){
                     return false;
                 }
             }
