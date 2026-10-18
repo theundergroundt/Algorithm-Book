@@ -2,32 +2,36 @@ import java.util.*;
 
 class Solution {
     public int solution(String name) {
+        int answer = 0;
+        
+        // 'A'+13 위아래 따지기
+        
+        int[] arr = new int[name.length()];
         int totalnum = 0;
-        int[] number = new int[name.length() + 1];
-        // A 제외 나머지 문자 처리
         for(int i=0; i<name.length(); i++){
-            char c  = name.charAt(i);
-            int t = c - 'A';
-            if(t == 0){
-                number[i] = 0;
+            char c = name.charAt(i);
+            int n = c - 'A';
+            if(n == 0){
+                arr[i] = 0;
                 continue;
-            }else if(t>13){
-                totalnum += ('Z' - c+1);
-            }
-            else totalnum += t;   
-            
-            number[i] = 1;
+            }else if(n > 13){
+                totalnum += (26 - n);
+            }else totalnum += n;
+            arr[i] = totalnum;
         }
-        // 커서 이동 처리
-        // 1 1 1 1 1
-        // 1 0 1 
-        int minnum = 51;
+        
+        int minnum = 52;
         for(int i=0; i<name.length(); i++){
-            int nxt = i+1;
-            while(nxt<name.length() && number[nxt] == 0) nxt++;
             
-            // A전까지 오른쪽으로 이동 + 끝에서부터 A뒤까지 이동 + 유턴or뒤에서터올건지
-            minnum = Math.min(minnum, i + name.length()-nxt + Math.min(i, name.length() - nxt));
+            // 연속된A가 어디서 끝나는지
+            int nxt = i+1;
+            while(nxt < name.length() && arr[nxt] == 0) nxt++;
+            
+            int back = i+i+name.length()-nxt; // 오른쪽 다시왼쪽 뒤에서앞으로
+            int back2 = name.length() - nxt +(name.length() - nxt + i); // 뒤에서 앞으로 + 돌아가기 + 오른쪽
+            
+            minnum = Math.min(minnum, Math.min(back, back2));
+            
         }
         int total = Math.min(minnum + totalnum, name.length() + totalnum);
         return total;
