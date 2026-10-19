@@ -2,36 +2,34 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] genres, int[] plays) {
-        int[] answer ;
+        int[] answer;
         
-        // 장르별 총 재생수
-        Map<String, Integer> map = new HashMap<>();
-        
+        // 장르별 총재생수
+        Map<String, Integer> genreNum = new HashMap<>();
         for(int i=0; i<genres.length; i++){
-            map.put(genres[i], map.getOrDefault(genres[i], 0)+plays[i]);
+            genreNum.put(genres[i], genreNum.getOrDefault(genres[i], 0) + plays[i]);
         }
         
-        // 장르별 곡 목록(번호, 재생수)
-        Map<String, List<int[]>> genresSongs = new HashMap<>();
+        List<String> genreOrder = new ArrayList<>(genreNum.keySet());
+        // 1번 우선순위, 재생수 내림차순
+        Collections.sort(genreOrder, (a,b) -> (genreNum.get(b) - genreNum.get(a)));
+        
+        // 장르별 {번호, 재생수}
+        Map<String, List<int[]>> genreSongs = new HashMap<>();
         for(int i=0; i<genres.length; i++){
-            genresSongs.putIfAbsent(genres[i], new ArrayList<>());
-            genresSongs.get(genres[i]).add(new int[]{i, plays[i]});
+            genreSongs.putIfAbsent(genres[i], new ArrayList<>());
+            genreSongs.get(genres[i]).add(new int[]{i, plays[i]});
         }
         
-        // 총 재생수 내림차순 기준 장르 정렬 
-        List<String> genreOrder = new ArrayList<>(map.keySet());
-        // 내림차순 정렬
-        genreOrder.sort((a, b) -> map.get(b) - map.get(a));
-        
-        // 각 장르에서 최대 2곡 뽑기
         List<Integer> result = new ArrayList<>();
         for(String s : genreOrder){
-            List<int[]> songs = genresSongs.get(s);
+            List<int[]> songs = genreSongs.get(s);
             
-            songs.sort((a, b) -> b[1] - a[1]);
+            // 2번 우선순위, 많이 재생괸 노래 내림차순
+            songs.sort((a,b) -> b[1]-a[1]);
             
-            for(int k=0; k<Math.min(2, songs.size()); k++){
-                result.add(songs.get(k)[0]);
+            for(int i=0; i<Math.min(2, songs.size()); i++){
+                result.add(songs.get(i)[0]);
             }
         }
         
@@ -39,6 +37,7 @@ class Solution {
         for(int i=0; i<result.size(); i++){
             answer[i] = result.get(i);
         }
+        
         
         return answer;
     }
