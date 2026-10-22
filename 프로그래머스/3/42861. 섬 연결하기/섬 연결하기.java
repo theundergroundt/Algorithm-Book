@@ -2,23 +2,25 @@ import java.util.*;
 
 class Solution {
     static int[] parent;
-    
     public int solution(int n, int[][] costs) {
-        
         int answer = 0;
-        parent = new int[n+1];
-        for(int i=0; i<=n; i++) parent[i] = i;
         
-        Arrays.sort(costs, (a,b) -> Integer.compare(a[2], b[2]));
+        parent = new int[n+1];
+        for(int i=0; i<=n; i++) {
+            parent[i] = i;
+        }
+        
+        Arrays.sort(costs, (a, b)->Integer.compare(a[2], b[2]));
         
         for(int[] c : costs){
             int a = c[0];
             int b = c[1];
-            int cc = c[2];
+            int cost = c[2];
             if(uni(a, b)){
-                answer+=cc;
+                answer+=cost;
             }
         }
+        
         return answer;
     }
     static boolean uni(int a, int b){
@@ -28,7 +30,6 @@ class Solution {
         parent[fir] = sec;
         return true;
     }
-    
     static int fin(int a){
         if(parent[a] == a) return a;
         return parent[a] = fin(parent[a]);
