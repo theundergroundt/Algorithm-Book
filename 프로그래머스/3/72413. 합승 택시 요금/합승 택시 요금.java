@@ -3,35 +3,32 @@ import java.util.*;
 class Solution {
     public int solution(int n, int s, int a, int b, int[][] fares) {
         int answer = 0;
-        int[][] dist = new int[n+1][n+1];
         
-        for(int i=0; i<=n; i++) {
-            Arrays.fill(dist[i], 200000000);
-            dist[i][i] = 0;
-        }
+        int[][] dist = new int[n+1][n+1];
+        for(int i=0; i<=n; i++) Arrays.fill(dist[i], 500000000);
         
         for(int[] f : fares){
-            int l = f[0];
-            int m = f[1];
-            int k = f[2];
-            dist[l][m] = k;
-            dist[m][l] = k;
+            dist[f[0]][f[1]] = f[2];
+            dist[f[1]][f[0]] = f[2];
         }
+        for(int i = 1; i<=n; i++) dist[i][i] = 0;
         
-        for(int k=1; k<=n; k++){
-            for(int i=1; i<=n; i++){
+        
+        for(int k = 1; k<=n; k++){
+            for(int i = 1; i<=n; i++){
                 for(int j=1; j<=n; j++){
-                    if(dist[i][j] > dist[i][k] + dist[k][j]){
-                        dist[i][j] = dist[i][k] + dist[k][j];
+                    int newdist = dist[i][k] + dist[k][j];
+                    if(newdist < dist[i][j]) {
+                        dist[i][j] = newdist;
                     }
                 }
             }
         }
-        int minnum = 987654321;
+        answer = Integer.MAX_VALUE;
         for(int i=1; i<=n; i++){
-            minnum = Math.min(minnum, dist[a][i] + dist[i][b] + dist[s][i]);
+            answer = Math.min(answer, dist[a][i]+ dist[i][b] + dist[s][i]);
         }
         
-        return minnum;
+        return answer;
     }
 }
