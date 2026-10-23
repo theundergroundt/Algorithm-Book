@@ -1,13 +1,14 @@
 import java.util.*;
 
 class Solution {
+    static int lasttime=0;
     static int temperature, t1, t2, a, b;
     static int[] onboard;
+    
     static int[][] dp;
-    static final int offset = 10;
     public int solution(int temperature, int t1, int t2, int a, int b, int[] onboard) {
         int answer = 0;
-        
+        lasttime = onboard.length;
         this.temperature = temperature;
         this.t1 = t1;
         this.t2 = t2;
@@ -15,44 +16,44 @@ class Solution {
         this.b = b;
         this.onboard = onboard;
         
-        dp = new int[onboard.length+1][100];
+        dp = new int[onboard.length + 1][100];
         for(int i=0; i<dp.length; i++){
             Arrays.fill(dp[i], -1);
         }
         
-        // 시간, 실내온도
-        answer = dfs(0, temperature);
-        
+        answer = dfs(0, temperature); // 현재 온도, 소비전력
         return answer;
     }
-    public int dfs(int t, int temp){
-        // 종료조건
-        if(t == onboard.length) return 0;
-        
-        if(temp<-10 || temp >40) return 100000000;
-        
-        // 승객이 타있는데 온도 범위 벗어났을때
-        if(onboard[t] == 1){
-            if(temp < t1 || temp > t2) return 100000000;
+    static int dfs(int t, int temp){
+        if(t == lasttime){
+            return 0;
         }
         
-        if(dp[t][temp+offset] != -1) return dp[t][temp+offset];
+        // t1, t2 바깥일때
+        if(onboard[t] == 1){
+            if(temp<t1 || temp >t2) return 100000;
+        }
+        if(temp<-10 || temp> 40) return 100000;
         
-        int mincost = 987654321;
-        // 에어컨 켰을때
-        mincost = Math.min(mincost, a + dfs(t+1, temp+1));
-        mincost = Math.min(mincost, a + dfs(t+1, temp-1));
-        mincost = Math.min(mincost, b + dfs(t+1, temp));
+        // 이미 방문한거 
+        if(dp[t][temp+10] != -1) return dp[t][temp+10];
         
-        // 에어컨 껐을때
-        if(temp < temperature){
-            mincost = Math.min(mincost, dfs(t+1, temp+1));
-        }else if(temp > temperature){
-            mincost = Math.min(mincost, dfs(t+1, temp-1));
-        }else mincost = Math.min(mincost, dfs(t+1, temp));
+        int minnum = Integer.MAX_VALUE;
+        // 에어컨 전원 킬때
+        minnum = Math.min(minnum, a + dfs(t+1, temp+1));
+        minnum = Math.min(minnum, b + dfs(t+1, temp));
+        minnum = Math.min(minnum, a + dfs(t+1, temp-1));
         
-        dp[t][temp+offset] = mincost;
-        return mincost;
+        // 끌때
+        if(temp<temperature){
+            minnum = Math.min(minnum, dfs(t+1, temp+1));
+        }else if(temp>temperature){
+            minnum = Math.min(minnum, dfs(t+1, temp-1));
+        }else{
+            minnum = Math.min(minnum, dfs(t+1, temp));
+        }
         
+        dp[t][temp+10] = minnum;
+        return minnum;
     }
 }
