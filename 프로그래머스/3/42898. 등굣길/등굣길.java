@@ -1,25 +1,25 @@
 import java.util.*;
+
 class Solution {
     public int solution(int m, int n, int[][] puddles) {
         int answer = 0;
-        int[][] dp = new int[n+1][m+1];
         
+        int[][] dist = new int[n+1][m+1];
         for(int[] p : puddles){
-            dp[p[1]][p[0]] = -1;
+            dist[p[1]][p[0]] = -1;
         }
         
-        dp[1][1] = 1;
         for(int i=1; i<=n; i++){
             for(int j=1; j<=m; j++){
-                if(i==1 && j==1) continue;
-                if(dp[i][j] == -1) {
-                    dp[i][j] = 0;
+                if(i==1 && j==1) {
+                    dist[i][j] = 1;
                     continue;
                 }
-                dp[i][j] = (dp[i-1][j] + dp[i][j-1])%1000000007;
+                if(dist[i][j] == -1) dist[i][j] = 0;
+                else dist[i][j] = (dist[i-1][j]+dist[i][j-1])%1000000007;
             }
         }
-        answer = dp[n][m];
+        answer = dist[n][m];
         return answer;
     }
 }
